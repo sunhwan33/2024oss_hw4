@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <title>Document</title>
+</head>
+<body>
+    
+    
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">update button</th>
+            <th scope="col">delete button</th>
+            <th scope="col">#</th>
+            <th scope="col">id</th>
+            <th scope="col">student number</th>
+            <th scope="col">name</th>
+            <th scope="col">1 major</th>
+            <th scope="col">2 major</th>
+            <th scope="col">email</th>
+            <th scope="col">birthdate</th>
+            <th scope="col">rc</th>
+
+          </tr>
+        </thead>
+        <tbody id="div_students">
+
+        </tbody>
+      </table>
+
+      <div class="container my-4">
+        <div class="d-flex gap-2">
+            <button class="btn btn-primary" onclick="getDataFromJSONFile()">Get Data</button>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createDataModal">Create Data</button>
+        </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="createDataModal" tabindex="-1" aria-labelledby="createDataModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createDataModal">Enter Data</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="dataForm">
+                        <div class="mb-3">
+                            <label for="Inputid" class="form-label">ID</label>
+                            <input type="text" class="form-control" id="Inputid" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="InputStudentNumber" class="form-label">Student number</label>
+                            <input type="text" class="form-control" id="InputStudentNumber" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="InputName" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="InputName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="InputFirstMajor" class="form-label">1st major</label>
+                            <input type="text" class="form-control" id="InputFirstMajor" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="InputSecondMajor" class="form-label">2nd major</label>
+                            <input type="text" class="form-control" id="InputSecondMajor">
+                        </div>
+                        <div class="mb-3">
+                            <label for="InputEmail" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="InputEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="InputBirthdate" class="form-label">Birthdate</label>
+                            <input type="date" class="form-control" id="InputBirthdate" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="InputRC" class="form-label">rc</label>
+                            <input type="text" class="form-control" id="InputRC" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="checkContent()">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 데이터 수정 모달 -->
+    
+<div class="modal fade" id="updateDataModal" tabindex="-1" aria-labelledby="updateDataModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateDataModalLabel">Update Data</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updateDataForm">
+                    <div class="mb-3">
+                        <label for="UpdateInputid" class="form-label">ID</label>
+                        <input type="text" class="form-control" id="UpdateInputid" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="UpdateInputStudentNumber" class="form-label">Student number</label>
+                        <input type="text" class="form-control" id="UpdateInputStudentNumber" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="UpdateInputName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="UpdateInputName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="UpdateInputFirstMajor" class="form-label">1st major</label>
+                        <input type="text" class="form-control" id="UpdateInputFirstMajor" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="UpdateInputSecondMajor" class="form-label">2nd major</label>
+                        <input type="text" class="form-control" id="UpdateInputSecondMajor">
+                    </div>
+                    <div class="mb-3">
+                        <label for="UpdateInputEmail" class="form-label">Email address</label>
+                        <input type="email" class="form-control" id="UpdateInputEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="UpdateInputBirthdate" class="form-label">Birthdate</label>
+                        <input type="date" class="form-control" id="UpdateInputBirthdate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="UpdateInputRC" class="form-label">rc</label>
+                        <input type="text" class="form-control" id="UpdateInputRC" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="updateDataToJSONFile()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script>
+        
+        /*
+        // 학생 ID 입력 모달 열기
+        function openIdInputModal() {
+            const idInputModal = new bootstrap.Modal(document.getElementById('idInputModal'));
+            idInputModal.show();
+        }*/
+        function openUpdateModal(studentId) {
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", `https://672cb0b81600dda5a9f980b5.mockapi.io/api/v1/oss_hw4/${studentId}`);
+            xhr.setRequestHeader("content-type", "application/json;charset=UTF-8");
+            xhr.send();
+
+            xhr.onload = () => {
+                if (xhr.status === 200) {
+                    const studentData = JSON.parse(xhr.responseText);
+
+                    // 모달에 학생 데이터 채우기
+                
+                    document.getElementById("UpdateInputid").value = studentData.id;
+                    document.getElementById("UpdateInputStudentNumber").value = studentData.student_number;
+                    document.getElementById("UpdateInputName").value = studentData.name ;
+                    document.getElementById("UpdateInputFirstMajor").value = studentData["1_major"] ;
+                    document.getElementById("UpdateInputSecondMajor").value = studentData["2_major"];
+                    document.getElementById("UpdateInputEmail").value = studentData.email ;
+                    document.getElementById("UpdateInputBirthdate").value = studentData.birthdate ;
+                    document.getElementById("UpdateInputRC").value = studentData.rc ; 
+
+                    // 데이터 수정 모달 열기
+                    const updateDataModal = new bootstrap.Modal(document.getElementById('updateDataModal'));
+                    updateDataModal.show();
+                } else {
+                    alert("학생 데이터를 찾을 수 없습니다.");
+                }
+            };
+        }
+
+
+        // 데이터 업데이트 요청 보내기
+        function updateDataToJSONFile() {
+            // 모달에서 값을 가져와서 데이터 객체 생성
+            let id = document.getElementById("Inputid").value;
+            let studentNumber = document.getElementById("InputStudentNumber").value;
+            let name = document.getElementById("InputName").value;
+            let firstMajor = document.getElementById("InputFirstMajor").value;
+            let secondMajor = document.getElementById("InputSecondMajor").value;
+            let email = document.getElementById("InputEmail").value;
+            let birthdate = document.getElementById("InputBirthdate").value;
+            let rc = document.getElementById("InputRC").value;
+
+            const data = {
+                id: id,
+                student_number: studentNumber,
+                name: name,
+                "1_major": firstMajor,
+                "2_major": secondMajor,
+                email: email,
+                birthdate: birthdate,
+                rc: rc
+            };
+
+            // 디버깅: 데이터 객체 확인
+            console.log("Data to send for update:", data);
+
+            // 데이터 전송
+            const xhr = new XMLHttpRequest();
+            xhr.open("PUT", `https://672cb0b81600dda5a9f980b5.mockapi.io/api/v1/oss_hw4/${id}`);
+            xhr.setRequestHeader("content-type", "application/json;charset=UTF-8");
+            xhr.send(JSON.stringify(data));
+
+            xhr.onload = () => {
+                if (xhr.status === 200) {
+                    alert("수정 성공");
+
+                    // 데이터 수정 모달 닫기
+                    const updateDataModal = bootstrap.Modal.getInstance(document.getElementById('updateDataModal'));
+                    updateDataModal.hide();
+
+                    // 업데이트된 데이터 목록 새로고침
+                    getDataFromJSONFile();
+                } else {
+                    alert("수정 실패: " + xhr.status);
+                }
+            };
+        }
+
+        // 이메일 형식 검사용 정규식
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(String(email).toLowerCase());
+        }
+        function checkContent(){
+            let id = document.getElementById("Inputid").value;
+            let studentnumber = document.getElementById("InputStudentNumber").value;
+            //alert(studentnumber);
+            
+            let name = document.getElementById("InputName").value;
+            let first_major = document.getElementById("InputFirstMajor").value;
+            let second_major = document.getElementById("InputSecondMajor").value;
+            let email = document.getElementById("InputEmail").value;
+            let birthdate = document.getElementById("InputBirthdate").value;
+            let rc = document.getElementById("InputRC").value;
+            console.log("studentnumber : "+studentnumber);
+            console.log("name : "+name);
+            console.log("first_major : "+first_major);
+            console.log("second_major : "+second_major);
+            console.log("email : "+email);
+            console.log("birthdate : "+birthdate);
+            console.log("rc : "+rc);
+            
+            
+            if (id==''){
+                alert('Enter your id');
+            }
+            if (studentnumber == '') {
+                alert('Enter your studentnumber');
+            }
+            if (name == '') {
+                
+                alert('Enter your name');
+            }
+            if (first_major == '') {
+                
+                alert('Enter your first_major');
+            }
+            if (email == '') {
+                
+                alert('Enter your email');
+            }
+            if (birthdate == '') {
+                
+                alert('Enter your birthdate');
+            }
+            if (rc == '') {
+                
+                alert('Enter your RC');
+            }
+            if (validateEmail(email) && studentnumber != '' && name != '' && first_major != '' && email != '' && birthdate != ''&& rc != ''){
+                
+                createDataToJSONFile()
+            }
+
+            
+        }
+
+        function getDataFromJSONFile(){
+           
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", "https://672cb0b81600dda5a9f980b5.mockapi.io/api/v1/oss_hw4");
+            xhr.setRequestHeader("content-type", "application/json");
+            xhr.send();
+
+            xhr.onload = () => {
+                
+                if(xhr.status === 200){
+                    console.log(JSON.stringify(xhr.response));
+                    
+                    $('#div_students').html("");
+                    
+                    //document.getElementById("div_students").innerHTML = xhr.response;
+                    let students = JSON.parse(xhr.response);
+                   
+
+                    // 각 학생 데이터를 테이블에 추가
+                    students.forEach((students, index) => {
+                        $('#div_students').append(`
+                            <tr>
+                                <td>
+                                    <button class="btn btn-warning" onclick="openUpdateModal('${students.id}')">Update</button>
+                                </td>
+                                <td>
+                                    <button class="btn btn-danger" onclick="deleteDataFromJSONFile('${students.id}')">Delete</button>
+                                </td>
+                                <th scope="row">${index + 1}</th>
+                                
+                                <td>${students.id}</td>
+                                <td>${students.student_number}</td>
+                                <td onclick="go_view()">${students.name}</td>
+                                <td>${students["1_major"]}</td>
+                                <td>${students["2_major"]}</td>
+                                <td>${students.email}</td>
+                                <td>${students.birthdate}</td>
+                                <td>${students.rc}</td>
+                            </tr>
+                        `); 
+                        });
+                    
+
+                }
+                
+            }
+        }
+
+        function createDataToJSONFile(){
+            let id = document.getElementById("Inputid").value;
+            let studentNumber = document.getElementById("InputStudentNumber").value;
+            let name = document.getElementById("InputName").value;
+            let firstMajor = document.getElementById("InputFirstMajor").value;
+            let secondMajor = document.getElementById("InputSecondMajor").value;
+            let email = document.getElementById("InputEmail").value;
+            let birthdate = document.getElementById("InputBirthdate").value;
+            let rc = document.getElementById("InputRC").value;
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "https://672cb0b81600dda5a9f980b5.mockapi.io/api/v1/oss_hw4");
+            xhr.setRequestHeader("content-type", "application/json;charset=UTF-8");
+            let data = {
+                id : id,
+                student_number: studentNumber,
+                name: name,
+                "1_major": firstMajor,
+                "2_major": secondMajor,
+                email: email,
+                birthdate: birthdate,
+                rc: rc
+            };
+            xhr.send(JSON.stringify(data));
+            
+            xhr.onload = () => {
+                //alert(JSON.stringify(xhr));
+                if(xhr.status === 201){
+                    console.log(JSON.stringify(xhr.response));
+                    console.log("등록 성공: " + xhr.status);
+                    getDataFromJSONFile();
+                    //alert("등록 성공");
+                    
+                    //document.getElementById("div_students").innerHTML = xhr.response;
+                    // 데이터 추가 모달 닫기
+                    const createDataModal = bootstrap.Modal.getInstance(document.getElementById('createDataModal'));
+                    createDataModal.hide();
+                }
+                else {
+                    //alert(xhr.status);
+                    console.log(JSON.stringify(xhr.response));
+                    console.log("등록 실패: " + xhr.status);
+                    //alert("등록 실패");
+                }
+            }
+        }
+        function updateDataToJSONFile() {
+            let student_id = document.getElementById("UpdateInputid").value;
+            let studentNumber = document.getElementById("UpdateInputStudentNumber").value;
+            let name = document.getElementById("UpdateInputName").value;
+            let firstMajor = document.getElementById("UpdateInputFirstMajor").value;
+            let secondMajor = document.getElementById("UpdateInputSecondMajor").value;
+            let email = document.getElementById("UpdateInputEmail").value;
+            let birthdate = document.getElementById("UpdateInputBirthdate").value;
+            let rc = document.getElementById("UpdateInputRC").value;
+        
+            const data = {
+                id: student_id,
+                student_number: studentNumber,
+                name: name,
+                "1_major": firstMajor,
+                "2_major": secondMajor,
+                email: email,
+                birthdate: birthdate,
+                rc: rc
+            };
+        
+            console.log("Data to send for update:", JSON.stringify(data));
+        
+            const xhr = new XMLHttpRequest();
+            xhr.open("PUT", `https://672cb0b81600dda5a9f980b5.mockapi.io/api/v1/oss_hw4/${student_id}`);
+            xhr.setRequestHeader("content-type", "application/json;charset=UTF-8");
+            xhr.send(JSON.stringify(data));
+        
+            xhr.onload = () => {
+                console.log("Response from server:", xhr.status, xhr.responseText);
+        
+                if (xhr.status === 200 || xhr.status === 204) {
+                    //alert("Update 등록 성공");
+                    //alert(xhr.status);
+                    console.log("update 성공: " + xhr.status);
+                    // 데이터 수정 모달 닫기
+                    const updateDataModal = bootstrap.Modal.getInstance(document.getElementById('updateDataModal'));
+                    updateDataModal.hide();
+        
+                    // 업데이트된 데이터 목록 새로고침
+                    getDataFromJSONFile();
+                } else {
+                    console.log("update 실패: " + xhr.status);
+                }
+            };
+        }
+        function deleteDataFromJSONFile(studentId) {
+            if (!confirm("정말로 삭제하시겠습니까?")) return; // 삭제 확인
+        
+            const xhr = new XMLHttpRequest();
+            xhr.open("DELETE", `https://672cb0b81600dda5a9f980b5.mockapi.io/api/v1/oss_hw4/${studentId}`);
+            xhr.setRequestHeader("content-type", "application/json;charset=UTF-8");
+            xhr.send();
+        
+            xhr.onload = () => {
+                if (xhr.status === 200 || xhr.status === 204) {
+                    //("삭제 성공");
+                    console.log("delete 성공: " + xhr.status);
+                    getDataFromJSONFile(); // 데이터 목록 새로고침
+                } else {
+                    //alert("삭제 실패: " + xhr.status);
+                    console.log("delete 실패: " + xhr.status);
+                }
+            };
+        }
+        
+        
+    </script>
+</body>
+</html>
