@@ -39,7 +39,7 @@
             <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createDataModal">Create Data</button>
         </div>
 
-    <!-- Modal -->
+    <!--Create Modal -->
     <div class="modal fade" id="createDataModal" tabindex="-1" aria-labelledby="createDataModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -55,7 +55,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="InputStudentNumber" class="form-label">Student number</label>
-                            <input type="text" class="form-control" id="InputStudentNumber" required>
+                            <input type="text" title="Just number" class="form-control" id="InputStudentNumber" required>
                         </div>
                         <div class="mb-3">
                             <label for="InputName" class="form-label">Name</label>
@@ -71,7 +71,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="InputEmail" class="form-label">Email address</label>
-                            <input type="email" class="form-control" id="InputEmail" required>
+                            <input type="email" title="sample@sample.com" class="form-control" id="InputEmail" required>
                         </div>
                         <div class="mb-3">
                             <label for="InputBirthdate" class="form-label">Birthdate</label>
@@ -85,7 +85,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" onclick="checkContent()">Submit</button>
+                    <button type="button" class="btn btn-primary" onclick="createDataToJSONFile()">Submit</button>
                 </div>
             </div>
         </div>
@@ -108,7 +108,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="UpdateInputStudentNumber" class="form-label">Student number</label>
-                        <input type="text" class="form-control" id="UpdateInputStudentNumber" required>
+                        <input type="text" pattern="^\d+$" title="학번은 숫자만 입력 가능합니다." class="form-control" id="UpdateInputStudentNumber" required>
                     </div>
                     <div class="mb-3">
                         <label for="UpdateInputName" class="form-label">Name</label>
@@ -124,7 +124,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="UpdateInputEmail" class="form-label">Email address</label>
-                        <input type="email" class="form-control" id="UpdateInputEmail" required>
+                        <input type="email" title="sample@sample.com" class="form-control" id="UpdateInputEmail" required>
                     </div>
                     <div class="mb-3">
                         <label for="UpdateInputBirthdate" class="form-label">Birthdate</label>
@@ -182,91 +182,52 @@
             };
         }
 
-
-        // 데이터 업데이트 요청 보내기
-        function updateDataToJSONFile() {
-            // 모달에서 값을 가져와서 데이터 객체 생성
-            let id = document.getElementById("Inputid").value;
-            let studentNumber = document.getElementById("InputStudentNumber").value;
-            let name = document.getElementById("InputName").value;
-            let firstMajor = document.getElementById("InputFirstMajor").value;
-            let secondMajor = document.getElementById("InputSecondMajor").value;
-            let email = document.getElementById("InputEmail").value;
-            let birthdate = document.getElementById("InputBirthdate").value;
-            let rc = document.getElementById("InputRC").value;
-
-            const data = {
-                id: id,
-                student_number: studentNumber,
-                name: name,
-                "1_major": firstMajor,
-                "2_major": secondMajor,
-                email: email,
-                birthdate: birthdate,
-                rc: rc
-            };
-
-            // 디버깅: 데이터 객체 확인
-            console.log("Data to send for update:", data);
-
-            // 데이터 전송
-            const xhr = new XMLHttpRequest();
-            xhr.open("PUT", `https://672cb0b81600dda5a9f980b5.mockapi.io/api/v1/oss_hw4/${id}`);
-            xhr.setRequestHeader("content-type", "application/json;charset=UTF-8");
-            xhr.send(JSON.stringify(data));
-
-            xhr.onload = () => {
-                if (xhr.status === 200) {
-                    alert("수정 성공");
-
-                    // 데이터 수정 모달 닫기
-                    const updateDataModal = bootstrap.Modal.getInstance(document.getElementById('updateDataModal'));
-                    updateDataModal.hide();
-
-                    // 업데이트된 데이터 목록 새로고침
-                    getDataFromJSONFile();
-                } else {
-                    alert("수정 실패: " + xhr.status);
-                }
-            };
-        }
-
         // 이메일 형식 검사용 정규식
-        function validateEmail(email) {
+        function isValidEmail(email) {
             const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return re.test(String(email).toLowerCase());
         }
-        function checkContent(){
-            let id = document.getElementById("Inputid").value;
-            let studentnumber = document.getElementById("InputStudentNumber").value;
-            //alert(studentnumber);
+        function isValidStudentNumber(input) {
+            const regex = /^\d+$/;
+            return regex.test(input);
+        }
+        function checkContent(data){ 
             
-            let name = document.getElementById("InputName").value;
-            let first_major = document.getElementById("InputFirstMajor").value;
-            let second_major = document.getElementById("InputSecondMajor").value;
-            let email = document.getElementById("InputEmail").value;
-            let birthdate = document.getElementById("InputBirthdate").value;
-            let rc = document.getElementById("InputRC").value;
-            console.log("studentnumber : "+studentnumber);
+
+            let id = data.id;
+            let studentNumber = data.student_number;
+            let name = data.name;
+            let firstMajor = data["1_major"];
+            let secondMajor = data["2_major"];
+            let email = data.email;
+            let birthdate = data.birthdate;
+            let rc = data.rc;
+            
+
+            console.log("studentnumber : "+studentNumber);
             console.log("name : "+name);
-            console.log("first_major : "+first_major);
-            console.log("second_major : "+second_major);
+            console.log("first_major : "+firstMajor);
+            console.log("second_major : "+secondMajor);
             console.log("email : "+email);
             console.log("birthdate : "+birthdate);
             console.log("rc : "+rc);
             
             
-            if (id==''){
-                alert('Enter your id');
-            }
-            if (studentnumber == '') {
+            
+            if (studentNumber == '') {
                 alert('Enter your studentnumber');
+            }
+            /*if (Number.isInteger(studentnumber)==false) {
+                alert('Enter your studentnumber as Integer');
+            }*/
+            if (!isValidStudentNumber(studentNumber)){
+                alert('Enter your studentnumber as Integer');
             }
             if (name == '') {
                 
                 alert('Enter your name');
             }
-            if (first_major == '') {
+            if (firstMajor == '') {
                 
                 alert('Enter your first_major');
             }
@@ -274,6 +235,7 @@
                 
                 alert('Enter your email');
             }
+            
             if (birthdate == '') {
                 
                 alert('Enter your birthdate');
@@ -282,10 +244,16 @@
                 
                 alert('Enter your RC');
             }
-            if (validateEmail(email) && studentnumber != '' && name != '' && first_major != '' && email != '' && birthdate != ''&& rc != ''){
-                
-                createDataToJSONFile()
+            if(!isValidEmail(email)){
+                alert("Keep your email format");
             }
+            if (isValidStudentNumber(studentNumber) && isValidEmail(email) && studentNumber != '' && name != '' && firstMajor != '' && email != '' && birthdate != ''&& rc != ''){
+                //if(test==1) createDataToJSONFile();
+                //else updateDataToJSONFile();
+                return true;
+            }
+            
+            
 
             
         }
@@ -306,7 +274,7 @@
                     
                     //document.getElementById("div_students").innerHTML = xhr.response;
                     let students = JSON.parse(xhr.response);
-                   
+                    
 
                     // 각 학생 데이터를 테이블에 추가
                     students.forEach((students, index) => {
@@ -351,8 +319,8 @@
             const xhr = new XMLHttpRequest();
             xhr.open("POST", "https://672cb0b81600dda5a9f980b5.mockapi.io/api/v1/oss_hw4");
             xhr.setRequestHeader("content-type", "application/json;charset=UTF-8");
-            let data = {
-                id : id,
+            const data = {
+                id: id,
                 student_number: studentNumber,
                 name: name,
                 "1_major": firstMajor,
@@ -361,31 +329,34 @@
                 birthdate: birthdate,
                 rc: rc
             };
-            xhr.send(JSON.stringify(data));
-            
-            xhr.onload = () => {
-                //alert(JSON.stringify(xhr));
-                if(xhr.status === 201){
-                    console.log(JSON.stringify(xhr.response));
-                    console.log("등록 성공: " + xhr.status);
-                    getDataFromJSONFile();
-                    //alert("등록 성공");
-                    
-                    //document.getElementById("div_students").innerHTML = xhr.response;
-                    // 데이터 추가 모달 닫기
-                    const createDataModal = bootstrap.Modal.getInstance(document.getElementById('createDataModal'));
-                    createDataModal.hide();
-                }
-                else {
-                    //alert(xhr.status);
-                    console.log(JSON.stringify(xhr.response));
-                    console.log("등록 실패: " + xhr.status);
-                    //alert("등록 실패");
+            if(checkContent(data)){
+                
+                xhr.send(JSON.stringify(data));
+                
+                xhr.onload = () => {
+                    //alert(JSON.stringify(xhr));
+                    if(xhr.status === 201){
+                        console.log(JSON.stringify(xhr.response));
+                        console.log("등록 성공: " + xhr.status);
+                        getDataFromJSONFile();
+                        //alert("등록 성공");
+                        
+                        //document.getElementById("div_students").innerHTML = xhr.response;
+                        // 데이터 추가 모달 닫기
+                        const createDataModal = bootstrap.Modal.getInstance(document.getElementById('createDataModal'));
+                        createDataModal.hide();
+                    }
+                    else {
+                        //alert(xhr.status);
+                        console.log(JSON.stringify(xhr.response));
+                        console.log("등록 실패: " + xhr.status);
+                        //alert("등록 실패");
+                    }
                 }
             }
         }
         function updateDataToJSONFile() {
-            let student_id = document.getElementById("UpdateInputid").value;
+            let id = document.getElementById("UpdateInputid").value;
             let studentNumber = document.getElementById("UpdateInputStudentNumber").value;
             let name = document.getElementById("UpdateInputName").value;
             let firstMajor = document.getElementById("UpdateInputFirstMajor").value;
@@ -395,7 +366,7 @@
             let rc = document.getElementById("UpdateInputRC").value;
         
             const data = {
-                id: student_id,
+                id: id,
                 student_number: studentNumber,
                 name: name,
                 "1_major": firstMajor,
@@ -406,13 +377,16 @@
             };
         
             console.log("Data to send for update:", JSON.stringify(data));
-        
-            const xhr = new XMLHttpRequest();
-            xhr.open("PUT", `https://672cb0b81600dda5a9f980b5.mockapi.io/api/v1/oss_hw4/${student_id}`);
-            xhr.setRequestHeader("content-type", "application/json;charset=UTF-8");
-            xhr.send(JSON.stringify(data));
-        
-            xhr.onload = () => {
+            
+            
+
+            if(checkContent(data)){
+                // 데이터 전송
+                const xhr = new XMLHttpRequest();
+                xhr.open("PUT", `https://672cb0b81600dda5a9f980b5.mockapi.io/api/v1/oss_hw4/${id}`);
+                xhr.setRequestHeader("content-type", "application/json;charset=UTF-8");
+                xhr.send(JSON.stringify(data));
+                xhr.onload = () => {
                 console.log("Response from server:", xhr.status, xhr.responseText);
         
                 if (xhr.status === 200 || xhr.status === 204) {
@@ -429,6 +403,10 @@
                     console.log("update 실패: " + xhr.status);
                 }
             };
+            }
+            
+        
+            
         }
         function deleteDataFromJSONFile(studentId) {
             if (!confirm("정말로 삭제하시겠습니까?")) return; // 삭제 확인
