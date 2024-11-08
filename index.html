@@ -55,7 +55,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="InputStudentNumber" class="form-label">Student number</label>
-                            <input type="text" title="Just number" class="form-control" id="InputStudentNumber" required>
+                            <input type="text" pattern="^\d+$" title="Just number" class="form-control" id="InputStudentNumber" required>
                         </div>
                         <div class="mb-3">
                             <label for="InputName" class="form-label">Name</label>
@@ -108,7 +108,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="UpdateInputStudentNumber" class="form-label">Student number</label>
-                        <input type="text" pattern="^\d+$" title="학번은 숫자만 입력 가능합니다." class="form-control" id="UpdateInputStudentNumber" required>
+                        <input type="text" pattern="^\d+$" title="Just number" class="form-control" id="UpdateInputStudentNumber" required>
                     </div>
                     <div class="mb-3">
                         <label for="UpdateInputName" class="form-label">Name</label>
